@@ -1,0 +1,18 @@
+{
+  "name": "koa-body-parsers",
+  "description": "collection of koa body parsers",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jonathan Ong",
+    "email": "me@jongleberry.com",
+    "url": "http://jongleberry.com",
+    "twitter": "https://twitter.com/jongleberry"
+  },
+  "license": "MIT",
+  "repository": "koajs/body-parsers",
+  "dependencies": {
+    "save-to": "1",
+    "raw-body": "1",
+    "co-busboy": "1"
+  }
+}
