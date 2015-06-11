@@ -1,3 +1,4 @@
+'use strict'
 
 /**
  * To do: move most of the body parsing stuff to a separate library.
