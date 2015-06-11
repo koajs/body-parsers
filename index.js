@@ -25,7 +25,6 @@ const request = {};
 const response = {};
 
 request.json = function* (limit) {
-  if (!this.is('json')) return;
   if (!this.length) return;
   const text = yield* this.text(limit);
   return this._parse_json(text);
@@ -46,7 +45,6 @@ request._parse_json = function (text) {
 }
 
 request.urlencoded = function* (limit) {
-  if (!this.is('urlencoded')) return;
   if (!this.length) return;
   const text = yield* this.text(limit);
   return this._parse_urlencoded(text);
