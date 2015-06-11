@@ -3,9 +3,9 @@
  * To do: move most of the body parsing stuff to a separate library.
  */
 
-var get = require('raw-body');
-var qs = require('querystring');
-var busboy = require('co-busboy');
+const get = require('raw-body');
+const qs = require('querystring');
+const busboy = require('co-busboy');
 
 module.exports = function (app) {
   Object.keys(request).forEach(function (key) {
@@ -20,21 +20,21 @@ module.exports = function (app) {
   return app
 }
 
-var context = {};
-var request = {};
-var response = {};
+const context = {};
+const request = {};
+const response = {};
 
 request.json = function* (limit) {
   if (!this.is('json')) return;
   if (!this.length) return;
-  var text = yield* this.text(limit);
+  const text = yield* this.text(limit);
   return this._parse_json(text);
 }
 
 request._parse_json = function (text) {
   if (this.app.jsonStrict !== false) {
     text = text.trim();
-    var first = text[0];
+    const first = text[0];
     if (first !== '{' && first !== '[')
       this.ctx.throw(400, 'only json objects or arrays allowed');
   }
@@ -48,12 +48,12 @@ request._parse_json = function (text) {
 request.urlencoded = function* (limit) {
   if (!this.is('urlencoded')) return;
   if (!this.length) return;
-  var text = yield* this.text(limit);
+  const text = yield* this.text(limit);
   return this._parse_urlencoded(text);
 }
 
 request._parse_urlencoded = function (text) {
-  var parse = (this.app.querystring || qs).parse;
+  const parse = (this.app.querystring || qs).parse;
   try {
     return parse(text);
   } catch (err) {
@@ -91,4 +91,4 @@ response.writeContinue = function () {
   return this;
 }
 
-context.save = require('save-to');
+context.save = require('fs-cp');
