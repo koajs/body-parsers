@@ -16,6 +16,7 @@
     "co-busboy": "1"
   },
   "devDependencies": {
+    "istanbul-harmony": "^0.3.12",
     "koa": "^0.21.0",
     "mocha": "^2.2.5",
     "standardberry": "^3.4.0",
@@ -24,8 +25,8 @@
   "scripts": {
     "lint": "standardberry index.js",
     "test": "mocha",
-    "test-cov": "babel-istanbul cover node_modules/mocha/bin/_mocha -- --reporter dot",
-    "test-ci": "npm run lint && babel-istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --reporter dot"
+    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --reporter dot",
+    "test-ci": "npm run lint && istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --reporter dot"
   },
   "keywords": [
     "koa",
