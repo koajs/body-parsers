@@ -5,10 +5,10 @@ const assert = require('assert')
 const http = require('http')
 const koa = require('koa')
 
-describe('Body Parsing', function () {
-  describe('.request.json()', function () {
-    it('should parse a json body', function (done) {
-      var app = koala()
+describe('Body Parsing', () => {
+  describe('.request.json()', () => {
+    it('should parse a json body', done => {
+      const app = koala()
       app.use(function* () {
         this.body = yield* this.request.json()
       })
@@ -22,8 +22,8 @@ describe('Body Parsing', function () {
       .expect(/"lol"/, done)
     })
 
-    it('should throw on non-objects in strict mode', function (done) {
-      var app = koala()
+    it('should throw on non-objects in strict mode', done => {
+      const app = koala()
       app.use(function* () {
         this.body = yield* this.request.json()
       })
@@ -34,8 +34,8 @@ describe('Body Parsing', function () {
       .expect(400, done)
     })
 
-    it('should not throw on non-objects in non-strict mode', function (done) {
-      var app = koala()
+    it('should not throw on non-objects in non-strict mode', done => {
+      const app = koala()
       app.jsonStrict = false
       app.use(function* () {
         this.body = yield* this.request.json()
@@ -49,9 +49,9 @@ describe('Body Parsing', function () {
     })
   })
 
-  describe('.request.urlencoded()', function () {
-    it('should parse a urlencoded body', function (done) {
-      var app = koala()
+  describe('.request.urlencoded()', () => {
+    it('should parse a urlencoded body', done => {
+      const app = koala()
       app.use(function* () {
         this.body = yield* this.request.urlencoded()
       })
@@ -63,8 +63,8 @@ describe('Body Parsing', function () {
       .expect(/"lol"/, done)
     })
 
-    it.skip('should not support nested query strings by default', function (done) {
-      var app = koala()
+    it.skip('should not support nested query strings by default', done => {
+      const app = koala()
       app.use(function* () {
         this.body = yield* this.request.urlencoded()
       })
@@ -80,8 +80,8 @@ describe('Body Parsing', function () {
       .expect(/something\[nested\]/, done)
     })
 
-    it.skip('should support nested query strings with options.qs=true', function (done) {
-      var app = koala({
+    it.skip('should support nested query strings with options.qs=true', done => {
+      const app = koala({
         qs: true
       })
       app.use(function* () {
@@ -104,9 +104,9 @@ describe('Body Parsing', function () {
     })
   })
 
-  describe('.request.text()', function () {
-    it('should get the raw text body', function (done) {
-      var app = koala()
+  describe('.request.text()', () => {
+    it('should get the raw text body', done => {
+      const app = koala()
       app.use(function* () {
         this.body = yield* this.request.text()
         assert.equal('string', typeof this.body)
@@ -118,8 +118,8 @@ describe('Body Parsing', function () {
       .expect('message=lol', done)
     })
 
-    it('should throw if the body is too large', function (done) {
-      var app = koala();
+    it('should throw if the body is too large', done => {
+      const app = koala();
       app.use(function* () {
         yield* this.request.text('1kb')
         this.body = 204
@@ -131,9 +131,9 @@ describe('Body Parsing', function () {
     })
   })
 
-  describe('.request.buffer()', function () {
-    it('should get the raw buffer body', function (done) {
-      var app = koala()
+  describe('.request.buffer()', () => {
+    it('should get the raw buffer body', done => {
+      const app = koala()
       app.use(function* () {
         this.body = yield* this.request.buffer()
         assert(Buffer.isBuffer(this.body))
@@ -145,8 +145,8 @@ describe('Body Parsing', function () {
       .expect('message=lol', done)
     })
 
-    it('should throw if the body is too large', function (done) {
-      var app = koala();
+    it('should throw if the body is too large', done => {
+      const app = koala();
       app.use(function* () {
         yield* this.request.buffer('1kb')
         this.body = 204
@@ -158,31 +158,31 @@ describe('Body Parsing', function () {
     })
   })
 
-  describe('.request.parts()', function () {
+  describe('.request.parts()', () => {
 
   })
 
-  describe('Expect: 100-continue', function () {
-    it('should send 100-continue', function (done) {
-      var app = koala();
+  describe('Expect: 100-continue', () => {
+    it('should send 100-continue', done => {
+      const app = koala();
       app.use(function* () {
         this.body = yield* this.request.json()
       })
-      app.listen(function () {
+      app.listen(() => {
         http.request({
           port: this.address().port,
           path: '/',
           headers: {
-            'expect': '100-continue',
+            expect: '100-continue',
             'content-type': 'application/json'
           }
         })
-        .once('continue', function () {
+        .once('continue', () => {
           this.end(JSON.stringify({
             message: 'lol'
           }))
         })
-        .once('response', function (res) {
+        .once('response', res => {
           done()
         })
         .once('error', done)
@@ -191,7 +191,7 @@ describe('Body Parsing', function () {
   })
 })
 
-function koala() {
+function koala () {
   const app = koa()
   require('..')(app)
   return app

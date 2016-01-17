@@ -8,14 +8,14 @@ const get = require('raw-body');
 const qs = require('querystring');
 const busboy = require('co-busboy');
 
-module.exports = function (app) {
-  Object.keys(request).forEach(function (key) {
+module.exports = app => {
+  Object.keys(request).forEach(key => {
     app.request[key] = request[key];
   });
-  Object.keys(response).forEach(function (key) {
+  Object.keys(response).forEach(key => {
     app.response[key] = response[key];
   });
-  Object.keys(context).forEach(function (key) {
+  Object.keys(context).forEach(key => {
     app.context[key] = context[key];
   });
   return app
@@ -35,8 +35,9 @@ request._parse_json = function (text) {
   if (this.app.jsonStrict !== false) {
     text = text.trim();
     const first = text[0];
-    if (first !== '{' && first !== '[')
+    if (first !== '{' && first !== '[') {
       this.ctx.throw(400, 'only json objects or arrays allowed');
+    }
   }
   try {
     return JSON.parse(text);
