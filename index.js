@@ -25,10 +25,9 @@ const context = {};
 const request = {};
 const response = {};
 
-request.json = function* (limit) {
-  if (!this.length) return;
-  const text = yield* this.text(limit);
-  return this._parse_json(text);
+request.json = function (limit) {
+  if (!this.length) return Promise.resolve();
+  return this.text(limit).then(text => this._parse_json(text));
 }
 
 request._parse_json = function (text) {
@@ -46,10 +45,9 @@ request._parse_json = function (text) {
   }
 }
 
-request.urlencoded = function* (limit) {
-  if (!this.length) return;
-  const text = yield* this.text(limit);
-  return this._parse_urlencoded(text);
+request.urlencoded = function (limit) {
+  if (!this.length) return Promise.resolve();
+  return this.text(limit).then(text => this._parse_urlencoded(text));
 }
 
 request._parse_urlencoded = function (text) {
@@ -61,18 +59,18 @@ request._parse_urlencoded = function (text) {
   }
 }
 
-request.text = function* (limit) {
+request.text = function (limit) {
   this.response.writeContinue();
-  return yield get(this.req, {
+  return get(this.req, {
     limit: limit || '100kb',
     length: this.length,
     encoding: 'utf8',
   })
 }
 
-request.buffer = function* (limit) {
+request.buffer = function (limit) {
   this.response.writeContinue();
-  return yield get(this.req, {
+  return get(this.req, {
     limit: limit || '1mb',
     length: this.length,
   })
