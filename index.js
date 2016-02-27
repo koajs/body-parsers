@@ -6,7 +6,6 @@
 
 const get = require('raw-body');
 const qs = require('querystring');
-const busboy = require('co-busboy');
 
 module.exports = app => {
   Object.keys(request).forEach(key => {
@@ -74,11 +73,6 @@ request.buffer = function (limit) {
     limit: limit || '1mb',
     length: this.length,
   })
-}
-
-request.parts = function (options) {
-  this.response.writeContinue();
-  return busboy(this, options)
 }
 
 response.writeContinue = function () {

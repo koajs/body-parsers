@@ -62,46 +62,6 @@ describe('Body Parsing', () => {
       .expect(/"message"/)
       .expect(/"lol"/, done)
     })
-
-    it.skip('should not support nested query strings by default', done => {
-      const app = koala()
-      app.use(function* () {
-        this.body = yield this.request.urlencoded()
-      })
-      request(app.listen())
-      .post('/')
-      .type('form')
-      .send({
-        something: {
-          nested: true
-        }
-      })
-      .expect(200)
-      .expect(/something\[nested\]/, done)
-    })
-
-    it.skip('should support nested query strings with options.qs=true', done => {
-      const app = koala({
-        qs: true
-      })
-      app.use(function* () {
-        this.body = yield this.request.urlencoded()
-      })
-      request(app.listen())
-      .post('/')
-      .type('form')
-      .send({
-        something: {
-          nested: true
-        }
-      })
-      .expect(200)
-      .expect({
-        something: {
-          nested: "true"
-        }
-      }, done)
-    })
   })
 
   describe('.request.text()', () => {
@@ -156,10 +116,6 @@ describe('Body Parsing', () => {
       .send(new Buffer(2048))
       .expect(413, done)
     })
-  })
-
-  describe('.request.parts()', () => {
-
   })
 
   describe('Expect: 100-continue', () => {
