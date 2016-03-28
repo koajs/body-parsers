@@ -3,5 +3,7 @@ node_js:
 - "5"
 language: node_js
 sudo: false
-script: "npm run test-ci"
-after_script: "npm install coveralls@2 && cat ./coverage/lcov.info | coveralls"
+script:
+  - npm run lint
+  - npm run test-ci
+  - npm install coveralls@2 && cat ./coverage/lcov.info | coveralls
