@@ -4,31 +4,34 @@
  * To do: move most of the body parsing stuff to a separate library.
  */
 
-const get = require('raw-body')
-const qs = require('querystring')
+var get = require('raw-body')
+var qs = require('querystring')
 
-module.exports = (app) => {
-  Object.keys(request).forEach((key) => {
+var request = {}
+var response = {}
+
+module.exports = function bodypParsers (app) {
+  Object.keys(request).forEach(function (key) {
     app.request[key] = request[key]
   })
-  Object.keys(response).forEach((key) => {
+  Object.keys(response).forEach(function (key) {
     app.response[key] = response[key]
   })
   return app
 }
 
-const request = {}
-const response = {}
-
 request.json = function (limit) {
   if (!this.length) return Promise.resolve()
-  return this.text(limit).then((text) => this._parse_json(text))
+  var self = this
+  return this.text(limit).then(function (text) {
+    return self._parse_json(text)
+  })
 }
 
 request._parse_json = function (text) {
   if (this.app.jsonStrict !== false) {
     text = text.trim()
-    const first = text[0]
+    var first = text[0]
     if (first !== '{' && first !== '[') {
       this.ctx.throw(400, 'only json objects or arrays allowed')
     }
@@ -42,11 +45,14 @@ request._parse_json = function (text) {
 
 request.urlencoded = function (limit) {
   if (!this.length) return Promise.resolve()
-  return this.text(limit).then((text) => this._parse_urlencoded(text))
+  var self = this
+  return this.text(limit).then(function (text) {
+    return self._parse_urlencoded(text)
+  })
 }
 
 request._parse_urlencoded = function (text) {
-  const parse = (this.app.querystring || qs).parse
+  var parse = (this.app.querystring || qs).parse
   try {
     return parse(text)
   } catch (err) {
