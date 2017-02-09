@@ -58,6 +58,13 @@ request._parse_urlencoded = function (text) {
   }
 }
 
+request.body = function (limit) {
+  switch (this.is('urlencoded', 'json')) {
+    case 'json': return this.json(limit)
+    case 'urlencoded': return this.urlencoded(limit)
+  }
+}
+
 request.text = function (limit) {
   this.response.writeContinue()
   return get(this.req, {

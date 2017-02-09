@@ -121,6 +121,36 @@ describe('Body Parsing', () => {
     })
   })
 
+  describe('.request.body()', () => {
+    it('should parse a json body', () => {
+      const app = koala()
+      app.use(function * () {
+        this.body = yield this.request.body()
+      })
+      return request(app.listen())
+        .post('/')
+        .send({
+          message: 'lol'
+        })
+        .expect(200)
+        .expect(/"message"/)
+        .expect(/"lol"/)
+    })
+
+    it('should parse a urlencoded body', () => {
+      const app = koala()
+      app.use(function * () {
+        this.body = yield this.request.body()
+      })
+      return request(app.listen())
+        .post('/')
+        .send('message=lol')
+        .expect(200)
+        .expect(/"message"/)
+        .expect(/"lol"/)
+    })
+  })
+
   describe('Expect: 100-continue', () => {
     it('should send 100-continue', (done) => {
       const app = koala()

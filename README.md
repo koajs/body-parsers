@@ -8,7 +8,11 @@
 [![License][license-image]][license-url]
 [![Downloads][downloads-image]][downloads-url]
 
-Includes a `json`, `urlencoded`, and `multipart` parsers,
+A more functional version of body parsing.
+Use this module if you want to "lazily" parse the body.
+Other middleware automatically parse the body in the middleware chain, which might not be ideal as business logic like authentication, authorization, and routing are not done prior to body parsing.
+
+Includes a `json` and `urlencoded` parsers,
 as well as a utility to save streams to disk.
 
 See https://github.com/koajs/koala/blob/master/docs/body-parsing.md for more details.
