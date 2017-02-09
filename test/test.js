@@ -9,114 +9,115 @@ const koa = require('koa')
 
 describe('Body Parsing', () => {
   describe('.request.json()', () => {
-    it('should parse a json body', (done) => {
+    it('should parse a json body', () => {
       const app = koala()
       app.use(function * () {
         this.body = yield this.request.json()
       })
-      request(app.listen())
+      return request(app.listen())
         .post('/')
         .send({
           message: 'lol'
         })
         .expect(200)
         .expect(/"message"/)
-        .expect(/"lol"/, done)
+        .expect(/"lol"/)
     })
 
-    it('should throw on non-objects in strict mode', (done) => {
+    it('should throw on non-objects in strict mode', () => {
       const app = koala()
       app.use(function * () {
         this.body = yield this.request.json()
       })
-      request(app.listen())
+      return request(app.listen())
         .post('/')
         .type('json')
         .send('"lol"')
-        .expect(400, done)
+        .expect(400)
     })
 
-    it('should not throw on non-objects in non-strict mode', (done) => {
+    it('should not throw on non-objects in non-strict mode', () => {
       const app = koala()
       app.jsonStrict = false
       app.use(function * () {
         this.body = yield this.request.json()
       })
-      request(app.listen())
+      return request(app.listen())
         .post('/')
         .type('json')
         .send('"lol"')
         .expect(200)
-        .expect('lol', done)
+        .expect('lol')
     })
   })
 
   describe('.request.urlencoded()', () => {
-    it('should parse a urlencoded body', (done) => {
+    it('should parse a urlencoded body', () => {
       const app = koala()
       app.use(function * () {
         this.body = yield this.request.urlencoded()
       })
-      request(app.listen())
+      return request(app.listen())
         .post('/')
         .send('message=lol')
         .expect(200)
         .expect(/"message"/)
-        .expect(/"lol"/, done)
+        .expect(/"lol"/)
     })
   })
 
   describe('.request.text()', () => {
-    it('should get the raw text body', (done) => {
+    it('should get the raw text body', () => {
       const app = koala()
       app.use(function * () {
         this.body = yield this.request.text()
         assert.equal('string', typeof this.body)
       })
-      request(app.listen())
+      return request(app.listen())
         .post('/')
         .send('message=lol')
         .expect(200)
-        .expect('message=lol', done)
+        .expect('message=lol')
     })
 
-    it('should throw if the body is too large', (done) => {
+    it('should throw if the body is too large', () => {
       const app = koala()
       app.use(function * () {
         yield this.request.text('1kb')
         this.body = 204
       })
-      request(app.listen())
+      return request(app.listen())
         .post('/')
         .send(new Buffer(2048))
-        .expect(413, done)
+        .expect(413)
     })
   })
 
   describe('.request.buffer()', () => {
-    it('should get the raw buffer body', (done) => {
+    it('should get the raw buffer body', () => {
       const app = koala()
       app.use(function * () {
+        this.type = 'text'
         this.body = yield this.request.buffer()
         assert(Buffer.isBuffer(this.body))
       })
-      request(app.listen())
+      return request(app.listen())
         .post('/')
         .send('message=lol')
         .expect(200)
-        .expect('message=lol', done)
+        .expect('message=lol')
     })
 
-    it('should throw if the body is too large', (done) => {
+    it('should throw if the body is too large', () => {
       const app = koala()
       app.use(function * () {
         yield this.request.buffer('1kb')
         this.body = 204
       })
-      request(app.listen())
+      return request(app.listen())
         .post('/')
         .send(new Buffer(2048))
-        .expect(413, done)
+        .expect(413)
     })
   })
 
