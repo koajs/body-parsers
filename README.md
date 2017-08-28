@@ -1,11 +1,10 @@
 
 # Koa Body Parsers
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/koajs/body-parsers.svg)](https://greenkeeper.io/)
-
 [![NPM version][npm-image]][npm-url]
 [![Build status][travis-image]][travis-url]
 [![Test coverage][coveralls-image]][coveralls-url]
+[![Greenkeeper badge](https://badges.greenkeeper.io/koajs/body-parsers.svg)](https://greenkeeper.io/)
 [![Dependency Status][david-image]][david-url]
 [![License][license-image]][license-url]
 [![Downloads][downloads-image]][downloads-url]
