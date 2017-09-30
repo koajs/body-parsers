@@ -5,7 +5,7 @@
 const request = require('supertest')
 const assert = require('assert')
 const http = require('http')
-const koa = require('koa')
+const Koa = require('koa')
 
 describe('Body Parsing', () => {
   describe('.request.json()', () => {
@@ -181,7 +181,7 @@ describe('Body Parsing', () => {
 })
 
 function koala () {
-  const app = koa()
+  const app = new Koa()
   require('..')(app)
   return app
 }
