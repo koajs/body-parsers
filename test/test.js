@@ -11,8 +11,8 @@ describe('Body Parsing', () => {
   describe('.request.json()', () => {
     it('should parse a json body', () => {
       const app = koala()
-      app.use(function * () {
-        this.body = yield this.request.json()
+      app.use(async (ctx) => {
+        ctx.body = await ctx.request.json()
       })
       return request(app.listen())
         .post('/')
@@ -26,8 +26,8 @@ describe('Body Parsing', () => {
 
     it('should throw on non-objects in strict mode', () => {
       const app = koala()
-      app.use(function * () {
-        this.body = yield this.request.json()
+      app.use(async (ctx) => {
+        ctx.body = await ctx.request.json()
       })
       return request(app.listen())
         .post('/')
@@ -39,8 +39,8 @@ describe('Body Parsing', () => {
     it('should not throw on non-objects in non-strict mode', () => {
       const app = koala()
       app.jsonStrict = false
-      app.use(function * () {
-        this.body = yield this.request.json()
+      app.use(async (ctx) => {
+        ctx.body = await ctx.request.json()
       })
       return request(app.listen())
         .post('/')
@@ -54,8 +54,8 @@ describe('Body Parsing', () => {
   describe('.request.urlencoded()', () => {
     it('should parse a urlencoded body', () => {
       const app = koala()
-      app.use(function * () {
-        this.body = yield this.request.urlencoded()
+      app.use(async (ctx) => {
+        ctx.body = await ctx.request.urlencoded()
       })
       return request(app.listen())
         .post('/')
@@ -69,9 +69,9 @@ describe('Body Parsing', () => {
   describe('.request.text()', () => {
     it('should get the raw text body', () => {
       const app = koala()
-      app.use(function * () {
-        this.body = yield this.request.text()
-        assert.equal('string', typeof this.body)
+      app.use(async (ctx) => {
+        ctx.body = await ctx.request.text()
+        assert.equal('string', typeof ctx.body)
       })
       return request(app.listen())
         .post('/')
@@ -82,9 +82,9 @@ describe('Body Parsing', () => {
 
     it('should throw if the body is too large', () => {
       const app = koala()
-      app.use(function * () {
-        yield this.request.text('1kb')
-        this.body = 204
+      app.use(async (ctx) => {
+        await ctx.request.text('1kb')
+        ctx.body = 204
       })
       return request(app.listen())
         .post('/')
@@ -96,10 +96,10 @@ describe('Body Parsing', () => {
   describe('.request.buffer()', () => {
     it('should get the raw buffer body', () => {
       const app = koala()
-      app.use(function * () {
-        this.type = 'text'
-        this.body = yield this.request.buffer()
-        assert(Buffer.isBuffer(this.body))
+      app.use(async (ctx) => {
+        ctx.type = 'text'
+        ctx.body = await ctx.request.buffer()
+        assert(Buffer.isBuffer(ctx.body))
       })
       return request(app.listen())
         .post('/')
@@ -110,9 +110,9 @@ describe('Body Parsing', () => {
 
     it('should throw if the body is too large', () => {
       const app = koala()
-      app.use(function * () {
-        yield this.request.buffer('1kb')
-        this.body = 204
+      app.use(async (ctx) => {
+        await ctx.request.buffer('1kb')
+        ctx.body = 204
       })
       return request(app.listen())
         .post('/')
@@ -124,8 +124,8 @@ describe('Body Parsing', () => {
   describe('.request.body()', () => {
     it('should parse a json body', () => {
       const app = koala()
-      app.use(function * () {
-        this.body = yield this.request.body()
+      app.use(async (ctx) => {
+        ctx.body = await ctx.request.body()
       })
       return request(app.listen())
         .post('/')
@@ -139,8 +139,8 @@ describe('Body Parsing', () => {
 
     it('should parse a urlencoded body', () => {
       const app = koala()
-      app.use(function * () {
-        this.body = yield this.request.body()
+      app.use(async (ctx) => {
+        ctx.body = await ctx.request.body()
       })
       return request(app.listen())
         .post('/')
@@ -154,8 +154,8 @@ describe('Body Parsing', () => {
   describe('Expect: 100-continue', () => {
     it('should send 100-continue', (done) => {
       const app = koala()
-      app.use(function * () {
-        this.body = yield this.request.json()
+      app.use(async (ctx) => {
+        ctx.body = await ctx.request.json()
       })
       app.listen(function () {
         http.request({
