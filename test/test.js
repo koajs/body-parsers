@@ -34,6 +34,7 @@ describe('Body Parsing', () => {
         .type('json')
         .send('"lol"')
         .expect(400)
+        .expect('only json objects or arrays allowed')
     })
 
     it('should not throw on non-objects in non-strict mode', () => {
@@ -49,6 +50,19 @@ describe('Body Parsing', () => {
         .expect(200)
         .expect('lol')
     })
+
+    it('should throw when parsing invalid JSON', () => {
+      const app = koala()
+      app.use(async (ctx) => {
+        ctx.body = await ctx.request.json()
+      })
+      return request(app.listen())
+        .post('/')
+        .type('json')
+        .send('{invalid:true}')
+        .expect(400)
+        .expect('invalid json received')
+    })
   })
 
   describe('.request.urlencoded()', () => {
@@ -63,6 +77,31 @@ describe('Body Parsing', () => {
         .expect(200)
         .expect(/"message"/)
         .expect(/"lol"/)
+    })
+
+    it('should return immediately when receiving an empty body', () => {
+      const app = koala()
+      app.use(async (ctx) => {
+        ctx.body = await ctx.request.urlencoded()
+      })
+      return request(app.listen())
+        .post('/')
+        .send('')
+        .expect(204)
+        .expect('')
+    })
+
+    it('should throw when the underlying parser fails', () => {
+      const app = koala()
+      app.querystring = () => { throw new Error('parsing failed') }
+      app.use(async (ctx) => {
+        ctx.body = await ctx.request.urlencoded()
+      })
+      return request(app.listen())
+        .post('/')
+        .send('boop')
+        .expect(400)
+        .expect('invalid urlencoded received')
     })
   })
 
@@ -163,6 +202,40 @@ describe('Body Parsing', () => {
           path: '/',
           headers: {
             expect: '100-continue',
+            'content-type': 'application/json'
+          }
+        })
+          .once('continue', function () {
+            this.end(JSON.stringify({
+              message: 'lol'
+            }))
+          })
+          .once('response', (res) => {
+            done()
+          })
+          .once('error', done)
+      })
+    })
+
+    it('should send 100-continue when not using app.listen()', (done) => {
+      const app = koala()
+      app.use(async (ctx) => {
+        ctx.body = await ctx.request.text()
+      })
+
+      const fn = app.callback()
+      const server = http.createServer()
+      server.on('checkContinue', (req, res) => {
+        req.checkContinue = true
+        fn(req, res)
+      })
+
+      server.listen(function () {
+        http.request({
+          port: this.address().port,
+          path: '/',
+          headers: {
+            Expect: '100-continue',
             'content-type': 'application/json'
           }
         })
