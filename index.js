@@ -14,13 +14,9 @@ module.exports = (app) => {
   Object.keys(response).forEach((key) => {
     app.response[key] = response[key]
   })
-  Object.keys(context).forEach((key) => {
-    app.context[key] = context[key]
-  })
   return app
 }
 
-const context = {}
 const request = {}
 const response = {}
 
@@ -89,5 +85,3 @@ response.writeContinue = function () {
   }
   return this
 }
-
-context.save = require('fs-cp')
