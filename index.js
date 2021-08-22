@@ -50,7 +50,10 @@ request.urlencoded = function (limit) {
 }
 
 request._parse_urlencoded = function (text) {
-  const parse = (this.app.querystring || qs).parse
+  const parse = (
+    this.app.querystring
+    && this.app.querystring.parse
+  ) || qs.parse;
   try {
     return parse(text)
   } catch (err) {
