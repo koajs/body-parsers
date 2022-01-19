@@ -19,7 +19,7 @@
     "koa": "^2.3.0",
     "mocha": "^3.1.2",
     "standard": "^10.0.3",
-    "supertest": "^3.0.0"
+    "supertest": "^6.2.2"
   },
   "scripts": {
     "lint": "standard index.js test/**/*.js",
