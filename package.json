@@ -11,7 +11,7 @@
   "license": "MIT",
   "repository": "koajs/body-parsers",
   "dependencies": {
-    "raw-body": "^2.1.0"
+    "raw-body": "^3.0.0"
   },
   "devDependencies": {
     "koa": "^2.3.0",
