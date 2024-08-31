@@ -7,8 +7,7 @@ A more functional version of body parsing.
 Use this module if you want to "lazily" parse the body.
 Other middleware automatically parse the body in the middleware chain, which might not be ideal as business logic like authentication, authorization, and routing are not done prior to body parsing.
 
-Includes a `json` and `urlencoded` parsers,
-as well as a utility to save streams to disk.
+Includes a `json` and `urlencoded` parsers.
 
 ## API
 
@@ -20,6 +19,16 @@ import Koa from 'koa'
 
 const app = new Koa()
 koaBodyParsers(app)
+
+// example usage
+app.use(async (ctx) => {
+  const currentUser = UserService.getCurrentUser(ctx)
+  ctx.assert(currentUser, 401)
+
+  ctx.assert(ctx.request.is('json'), 415)
+  const body = await ctx.request.json('100kb')
+  ctx.body = body
+})
 ```
 
 Because this module is a plugin for the `context`, the API signature is different.
