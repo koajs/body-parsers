@@ -24,7 +24,7 @@ koaBodyParsers(app)
 
 Because this module is a plugin for the `context`, the API signature is different.
 
-### Expect: 100-continue and this.response.writeContinue()
+### Expect: 100-continue and ctx.response.writeContinue()
 
 `Expect: 100-continue` is automatically supported as long as you use `app.listen()`.
 Otherwise, create your server like this:
@@ -55,23 +55,23 @@ app.use(async (ctx) => {
 })
 ```
 
-### const body = await this.request.json([limit])
+### const body = await ctx.request.json([limit])
 
 Get the JSON body of the request, if any.
 `limit` defaults to `100kb`.
 
-### const body = await this.request.urlencoded([limit])
+### const body = await ctx.request.urlencoded([limit])
 
 Get the traditional form body of the request, if any,
 `limit` defaults to `100kb`.
 
-### const text = await this.request.text([limit])
+### const text = await ctx.request.text([limit])
 
 Get the body of the request as a single `text` string.
 `limit` defaults to `100kb`.
 You could use this to create your own request body parser of some sort.
 
-### const buffer = await this.request.buffer([limit])
+### const buffer = await ctx.request.buffer([limit])
 
 Get the body of the request as a single `Buffer` instance.
 `limit` defaults to `1mb`.
