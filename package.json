@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "koa": "^2.3.0",
-    "mocha": "^10.3.0",
+    "mocha": "^11.7.1",
     "standard": "^17.1.0",
     "supertest": "^6.3.4"
   },
