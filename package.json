@@ -14,7 +14,7 @@
     "raw-body": "^3.0.0"
   },
   "devDependencies": {
-    "koa": "^2.3.0",
+    "koa": "^3.0.1",
     "mocha": "^10.3.0",
     "standard": "^17.1.0",
     "supertest": "^6.3.4"
