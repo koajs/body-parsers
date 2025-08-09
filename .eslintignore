@@ -1,0 +1,2 @@
+test/*.*.ts
+tsup.config.ts

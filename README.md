@@ -1,5 +1,4 @@
-
-# Koa Body Parsers
+# [**@koa/body-parsers**](https://github.com/koajs/body-parsers)
 
 [![NPM version][npm-image]][npm-url]
 
@@ -14,21 +13,22 @@ Includes a `json` and `urlencoded` parsers.
 Initialization:
 
 ```js
-import koaBodyParsers from 'koa-body-parsers'
-import Koa from 'koa'
+// import withBodyParsers from 'koa-body-parsers'
+import { withBodyParsers } from "koa-body-parsers";
+import Koa from "koa";
 
-const app = new Koa()
-koaBodyParsers(app)
+const app = new Koa();
+withBodyParsers(app);
 
 // example usage
 app.use(async (ctx) => {
-  const currentUser = UserService.getCurrentUser(ctx)
-  ctx.assert(currentUser, 401)
+  const currentUser = UserService.getCurrentUser(ctx);
+  ctx.assert(currentUser, 401);
 
-  ctx.assert(ctx.request.is('json'), 415)
-  const body = await ctx.request.json('100kb')
-  ctx.body = body
-})
+  ctx.assert(ctx.request.is("json"), 415);
+  const body = await ctx.request.json("100kb");
+  ctx.body = body;
+});
 ```
 
 Because this module is a plugin for the `context`, the API signature is different.
@@ -41,8 +41,8 @@ Otherwise, create your server like this:
 ```js
 const fn = app.callback();
 const server = http.createServer(); // or whatever server you use
-server.on('request', fn); // regular requests
-server.on('checkContinue', function (req, res) {
+server.on("request", fn); // regular requests
+server.on("checkContinue", function (req, res) {
   // tag requests with `Expect: 100-continue`
   req.checkContinue = true;
   fn(req, res);
@@ -57,11 +57,11 @@ but you would still have to call it if you're doing something like:
 
 ```js
 app.use(async (ctx) => {
-  if (ctx.request.is('image/*')) {
+  if (ctx.request.is("image/*")) {
     ctx.response.writeContinue();
-    const buffer = await ctx.request.buffer()
+    const buffer = await ctx.request.buffer();
   }
-})
+});
 ```
 
 ### const body = await ctx.request.json([limit])
