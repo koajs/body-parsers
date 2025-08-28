@@ -13,8 +13,8 @@ Includes a `json` and `urlencoded` parsers.
 Initialization:
 
 ```js
-// import withBodyParsers from 'koa-body-parsers'
-import { withBodyParsers } from "koa-body-parsers";
+// import withBodyParsers from '@koa/body-parsers'
+import { withBodyParsers } from "@koa/body-parsers";
 import Koa from "koa";
 
 const app = new Koa();
@@ -85,5 +85,5 @@ You could use this to create your own request body parser of some sort.
 Get the body of the request as a single `Buffer` instance.
 `limit` defaults to `1mb`.
 
-[npm-image]: https://img.shields.io/npm/v/koa-body-parsers.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/koa-body-parsers
+[npm-image]: https://img.shields.io/npm/v/@koa/body-parsers.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/@koa/body-parsers
