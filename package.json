@@ -1,6 +1,6 @@
 {
   "name": "@koa/body-parsers",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "description": "Koa body parsers collection",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
