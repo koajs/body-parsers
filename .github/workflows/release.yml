@@ -1,0 +1,80 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Semver bump type
+        type: choice
+        required: true
+        default: patch
+        options:
+          - patch
+          - minor
+          - major
+          - premajor
+          - preminor
+          - prepatch
+          - prerelease
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check RELEASE_TOKEN is set
+        run: |
+          if [ -z "${{ secrets.RELEASE_TOKEN }}" ]; then
+            echo "::error::RELEASE_TOKEN secret is not set. This workflow requires a PAT whose owner is in the main branch ruleset bypass list." >&2
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: master
+          token: ${{ secrets.RELEASE_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.x'
+          registry-url: 'https://registry.npmjs.org'
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump versions, commit, tag
+        id: bump
+        run: |
+          npm version "${{ inputs.bump }}" --no-git-tag-version
+          VERSION=$(node -p "require('./package.json').version")
+          git add package.json package-lock.json
+          git commit -m "chore(release): v$VERSION"
+          git tag -a "v$VERSION" -m "v$VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - run: git push origin HEAD:master --follow-tags
+
+      - run: npm publish --provenance --access public
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        run: |
+          gh release create "v${{ steps.bump.outputs.version }}" \
+            --title "v${{ steps.bump.outputs.version }}" \
+            --generate-notes

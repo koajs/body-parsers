@@ -1,0 +1,121 @@
+name: Dependabot PR Auto-merge
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+
+permissions:
+  pull-requests: write
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  automerge:
+    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const pr = context.payload.pull_request;
+
+            function isMajorBump(from, to) {
+              const major = v => parseInt(v.replace(/^v/, '').split('.')[0], 10);
+              return major(to) > major(from);
+            }
+
+            function hasMajorBump(pullRequest) {
+              const titleMatch = pullRequest.title.match(/from\s+v?([\d.]+)\s+to\s+v?([\d.]+)/i);
+              if (titleMatch) {
+                return isMajorBump(titleMatch[1], titleMatch[2]);
+              }
+
+              const body = pullRequest.body ?? '';
+              const bodyMatches = [...body.matchAll(/from\s+`?v?([\d.]+)`?\s+to\s+`?v?([\d.]+)`?/gi)];
+              return bodyMatches.some(match => isMajorBump(match[1], match[2]));
+            }
+
+            function hasActiveApproval(reviews) {
+              const latestStateByUser = new Map();
+              const sortedReviews = [...reviews].sort((a, b) => {
+                return new Date(a.submitted_at ?? 0).getTime() - new Date(b.submitted_at ?? 0).getTime();
+              });
+
+              for (const review of sortedReviews) {
+                if (review.user) {
+                  latestStateByUser.set(review.user.login, review.state);
+                }
+              }
+
+              return [...latestStateByUser.values()].includes('APPROVED');
+            }
+
+            core.info(`Evaluating PR #${pr.number} (${pr.title})`);
+
+            if (pr.draft) {
+              core.info('Skipping draft pull request');
+              return;
+            }
+
+            if (hasMajorBump(pr)) {
+              core.info('Skipping semver-major update');
+              return;
+            }
+
+            const { data: reviews } = await github.rest.pulls.listReviews({
+              owner,
+              repo,
+              pull_number: pr.number,
+              per_page: 100,
+            });
+
+            if (hasActiveApproval(reviews)) {
+              core.info('Approval already present');
+            } else {
+              core.info('Approving PR');
+              await github.rest.pulls.createReview({
+                owner,
+                repo,
+                pull_number: pr.number,
+                event: 'APPROVE',
+              });
+            }
+
+            const { data: freshPr } = await github.rest.pulls.get({
+              owner,
+              repo,
+              pull_number: pr.number,
+            });
+
+            if (freshPr.auto_merge) {
+              core.info('Auto-merge already enabled');
+              return;
+            }
+
+            core.info('Enabling auto-merge');
+            try {
+              await github.graphql(`
+                mutation($pullRequestId: ID!) {
+                  enablePullRequestAutoMerge(input: {
+                    pullRequestId: $pullRequestId,
+                    mergeMethod: SQUASH
+                  }) {
+                    pullRequest { autoMergeRequest { enabledAt } }
+                  }
+                }
+              `, { pullRequestId: freshPr.node_id });
+              core.info('Done: auto-merge enabled');
+            } catch (err) {
+              core.warning(`Could not enable auto-merge: ${err.message}. Ensure branch protection with required status checks is configured on the base branch.`);
+            }
