@@ -1,0 +1,26 @@
+# .github/labeler.yml
+
+typescript:
+  - changed-files:
+      - any-glob-to-any-file: 'src/**/*'
+
+tests:
+  - changed-files:
+      - any-glob-to-any-file: 'test/**/*'
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'README.md'
+          - 'LICENSE'
+          - 'docs/**/*'
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'package.json'
+          - 'package-lock.json'
+
+workflows:
+  - changed-files:
+      - any-glob-to-any-file: '.github/workflows/**/*'
