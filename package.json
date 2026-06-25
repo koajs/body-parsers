@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@types/koa": "^3.0.0",
-    "@types/node": "^25.0.10",
+    "@types/node": "^26.0.1",
     "@types/supertest": "^6.0.3",
     "c8": "^11.0.0",
     "koa": "^3.0.1",
