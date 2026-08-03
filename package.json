@@ -47,19 +47,19 @@
     "raw-body": "^3.0.0"
   },
   "devDependencies": {
-    "@types/koa": "^3.0.0",
-    "@types/node": "^25.0.10",
-    "@types/supertest": "^6.0.3",
-    "c8": "^11.0.0",
-    "koa": "^3.0.1",
-    "rimraf": "^6.0.1",
-    "supertest": "^7.1.4",
+    "@types/koa": "^3.0.3",
+    "@types/node": "^26.1.2",
+    "@types/supertest": "^7.2.1",
+    "c8": "^12.0.0",
+    "koa": "^3.2.1",
+    "rimraf": "^6.1.3",
+    "supertest": "^7.2.2",
     "ts-node": "^10.9.2",
     "ts-standard": "^12.0.2",
-    "tsup": "^8.5.0",
-    "typescript": "6.0"
+    "tsup": "^8.5.1",
+    "typescript": "6"
   },
-  "enignes": {
+  "engines": {
     "node": ">=20"
   },
   "repository": "koajs/body-parsers",
