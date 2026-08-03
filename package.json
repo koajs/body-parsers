@@ -60,7 +60,7 @@
     "typescript": "^5.9.3"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "repository": "koajs/body-parsers",
   "bugs": {
