@@ -44,7 +44,7 @@
     "koa": ">= 2"
   },
   "dependencies": {
-    "raw-body": "^3.0.0"
+    "raw-body": "^3.0.2"
   },
   "devDependencies": {
     "@types/koa": "^3.0.3",
